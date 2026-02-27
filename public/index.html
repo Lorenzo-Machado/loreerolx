@@ -78,7 +78,7 @@
                     height: auto;
                   }
 
-                  .songstitch-collage {
+                  .steam-games {
                     width: 100%;
                     height: auto;
                   }
@@ -2767,6 +2767,7 @@
             </p>
           </div>
         </div>
+        
         <div class="draggable">
           <div class="move card">
             <h4><strong>[root@Lorenzo~]#> uptime</strong></h4>
@@ -2778,12 +2779,19 @@
             
             <h3>Currently playing</h3>
             <img
-              alt="lastFM SongStitch collage"
-              class="songstitch-collage"
+              alt="Steam Games"
+              class="steam-games"
               width="500px"
               height="500px"
-              src="https://files.catbox.moe/qk3f51.png"
+              src="images/gamesrn.png"
             />
+          </div>
+        </div>
+        <div class="draggable">
+          <div class="move card" id="rss-card">
+            <h1>News of the Day</h1>
+            <!-- TechRadar RSS headline will be typed here -->
+            <span id="rss-headline"></span>
           </div>
         </div>
          <div class="draggable cat" id="cat">
@@ -2806,12 +2814,10 @@
             <p class="ipaddress"></p>
           </div>
         </div>
-        <div class="draggable">
-          <div class="move card typecontent">
-            <div class="element"></div>
-          </div>
-        </div>
+        
+        
         <script type="text/javascript">
+          
           /* Uptime */
 
           function updateClock() {
@@ -2847,13 +2853,9 @@
           }
           uptimeCard();
 
-          /* ASCII typed text */
+          /* ASCII typed text 
           var typed = new Typed(".element", {
             strings: [
-              "<span style='color:#009966;'><pre>      ___     <br>     /      <br>    /::     <br>   /:/:    <br>  /:/  :   <br> /:/__/ :__<br> :   /:/  /<br>  :  /:/  / <br>   :/:/  /  <br>    ::/  /   <br>     /__/    <br></pre>",
-
-              "<span style='color:#009966;'><pre> Oi meu nome é Samara, tenho 14 anos.<br>(Teria se estivesse viva),<br> morri aos 13 em Cascavel-PR.<br>Eu andava de bicicleta Quando não pude desviar de um arame farpado.<br>O pior foi que o dono do lote não quis me ajudar,<br> riu bastante mim após agonizar por 2 horas enroscada no arame eu faleci, <br>através dessa mensagem eu peço que façam com que eu possa descançar em paz. <br>Envie isso para 20 comunidades e minha alma estara sendo salva por você e pelos outros 20 que receberão.<br>Caso não repasse essa mensagem vou visitar-lhe hoje a noite assim vc poderá conhecer o tal arame bem de pertinho.<br> Dia 15 de Julho Mariana resolveu rir dessa mensagem,<br>uma noite depois ela sumiu sem deixar vestigios.<br>O mesmo aconteceu com Kare dia 18 de Outubro.<br>Não Quebre essa corrente por favor, a não ser que queira sentir a minha presença<br></pre>",
-
               "<span style='color:#009966;'><pre>       (    (      <br>   (   ) ) ) )   <br> ( ) (()/((()/(   <br> )((_) /(_))/(_))  <br>((_)_ (_)) (_))_   <br> | _ )/ __| |     <br> | _ \\__  | |) | <br> |___/|___/ |___/ <br></pre>",
 
               "<span style='color:#009966;'><pre>___/~~____/~~~~~___/~~~~~~__/~~~~~ <br>__/~~____/~~_/~~_/~~_/~~_/~~_/~~   <br>_/~~~~~___/~~~~~_____/~~~___/~~~~~<br>/~~_/~~_/~~_/~~_/~~_/~~_/~~_/~~   <br>_/~~~~~___/~~~~~___/~~~~~~__/~~~~~   <br>_/~~~~~____/~~_____/~~~~~_____/~~~~~<br>/~~_/~~__/~~~____/~~_/~~___/~~_/~~<br>_/~~~~~____/~~___/~~___/~~_/~~___/~~<br>___/~~_____/~~____/~~_/~~___/~~_/~~<br>__/~~____/~~~~~~___/~~~~~_____/~~~~~<br></pre>",
@@ -2870,6 +2872,51 @@
             autoInsertCss: false,
             smartBackspace: false,
           });
+
+          /* TechRadar RSS headlines (one at a time) */
+          function initRssHeadline() {
+            const proxy = 'https://api.allorigins.win/raw?url=';
+            const feedUrl = 'https://www.techradar.com/rss';
+            fetch(proxy + encodeURIComponent(feedUrl))
+              .then((res) => res.text())
+              .then((data) => {
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(data, 'text/xml');
+                const items = xml.querySelectorAll('item');
+                const strings = [];
+                items.forEach((item) => {
+                  const titleEl = item.querySelector('title');
+                  const linkEl = item.querySelector('link');
+                  if (titleEl && linkEl) {
+                    const title = titleEl.textContent.trim();
+                    const link = linkEl.textContent.trim();
+                    strings.push(
+                      `<span style='color:#009966;'><a href="${link}" target="_blank" rel="noopener">${title}</a></span>`,
+                    );
+                  }
+                });
+                if (strings.length === 0) {
+                  document.getElementById('rss-headline').textContent =
+                    '(no headlines)';
+                  return;
+                }
+                new Typed('#rss-headline', {
+                  strings: strings,
+                  contentType: 'html',
+                  typeSpeed: 3,
+                  loop: true,
+                  shuffle: true,
+                  showCursor: false,
+                  autoInsertCss: false,
+                  smartBackspace: false,
+                });
+              })
+              .catch((err) => {
+                console.error('RSS fetch failed', err);
+              });
+          }
+
+          initRssHeadline();
 
           /* Drag */
           function enableDrag() {
