@@ -2869,6 +2869,20 @@
             smartBackspace: false,
           });
 
+          /* Utility to escape potentially dangerous characters in
+             * strings that will be inserted into HTML.  This prevents
+             * any user-provided or third-party content from breaking out of
+             * its container and executing script.
+             */
+          function escapeHtml(str) {
+            return str
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/\"/g, "&quot;")
+              .replace(/'/g, "&#39;");
+          }
+
           /* Hacker News RSS headlines (one at a time) */
           function initRssHeadline() {
             const loadingEl = document.getElementById('rss-loading');
@@ -2889,8 +2903,22 @@
                   const titleEl = item.querySelector('title');
                   const linkEl = item.querySelector('link');
                   if (titleEl && linkEl) {
-                    const title = titleEl.textContent.trim();
-                    const link = linkEl.textContent.trim();
+                    // grab raw values
+                    const rawTitle = titleEl.textContent.trim();
+                    const rawLink = linkEl.textContent.trim();
+
+                    // escape any HTML meta-characters before we insert
+                    const title = escapeHtml(rawTitle);
+
+                    // Only allow http/https URLs; otherwise fall back to a safe
+                    // placeholder.  This blocks javascript: links, tel:, etc.
+                    let link;
+                    if (/^https?:\/\//i.test(rawLink)) {
+                      link = escapeHtml(rawLink);
+                    } else {
+                      link = "#";
+                    }
+
                     strings.push(
                       `<span style='color:#009966;'><a href="${link}" target="_blank" rel="noopener">${title}</a></span>`,
                     );
@@ -3118,7 +3146,7 @@
           ].join(";");
 
           console.log(
-            "%c  no easter eggs here go away \t\n",
+            "%c  no easter eggs here go away, or are you looking for the source code? \t\n",
             styles,
           );
 
@@ -3150,7 +3178,7 @@
                 text: "<q>DEITA NO CHÃO PORRA.</q><br />- Marcos, Sgt.",
               },
               {
-                text: "<q>To levando de 4 ainda.</q><br />- Lucas",
+                text: "<q>To levando de 4 ainda.</q><br />- Teles, Lucas",
               },
               {
                 text: "<q>Achei q ele ja tinha ate superado.</q><br />- Brum, Eduarda",
@@ -3251,7 +3279,8 @@
               );
               ipinfo = jsonData;
               if (ipinfo.ip != null) {
-                document.querySelector(".ipaddress").innerHTML = ipinfo.ip;
+                // always treat external data as text, never as HTML
+                document.querySelector(".ipaddress").textContent = ipinfo.ip;
                 document.querySelector(".ipinfo").style.display = "revert";
               }
             })
