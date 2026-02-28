@@ -2760,13 +2760,17 @@
             </p>
           </div>
         </div>
-        
         <div class="draggable">
-          <div class="move card">
-            <h4><strong>[root@Lorenzo]>my life uptime</strong></h4>
-            <span id="clock" class="clock"></span>
+          <div class="move card" id="rss-card">
+            <h1>News of the Day</h1>
+            <div id="rss-loading" style="display: none;">
+              <span style="color:#009966; font-family: monospace;">[root@news]# <span class="loading-dots">loading</span></span>
+            </div>
+            <!-- Hacker News RSS headline will be typed here -->
+            <span id="rss-headline"></span>
           </div>
         </div>
+        
         <div class="draggable">
           <div class="move card">
             
@@ -2780,16 +2784,7 @@
             />
           </div>
         </div>
-        <div class="draggable">
-          <div class="move card" id="rss-card">
-            <h1>News of the Day</h1>
-            <div id="rss-loading" style="display: none;">
-              <span style="color:#009966; font-family: monospace;">[root@news]# <span class="loading-dots">loading</span></span>
-            </div>
-            <!-- Hacker News RSS headline will be typed here -->
-            <span id="rss-headline"></span>
-          </div>
-        </div>
+        
          <div class="draggable cat" id="cat">
           <div class="move card">
             <h3>rei says: "hewoo :p"</h3>
@@ -2808,6 +2803,12 @@
           <div class="move card ipinfo">
             <h4><strong>Visitor IP Address</strong></h4>
             <p class="ipaddress"></p>
+          </div>
+        </div>
+        <div class="draggable">
+          <div class="move card">
+            <h4><strong>[root@Lorenzo]>my life uptime</strong></h4>
+            <span id="clock" class="clock"></span>
           </div>
         </div>
         
