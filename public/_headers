@@ -4,3 +4,4 @@
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   Referrer-Policy: no-referrer-when-downgrade
   Permissions-Policy: geolocation=()
+  Content-Security-Policy: default-src 'self'; script-src 'unsafe-inline' 'self'; style-src 'unsafe-inline' 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.ipify.org; frame-src 'self' https://theden.sh; base-uri 'self'; form-action 'self'
